@@ -1,19 +1,19 @@
 <?php
 
-function noname_blacklist_ip_Analyze_IP ( $Input ) {
+function noname_fake_link_ip_Analyze_IP ( $Input ) {
 	if ( strpos ( $Input , "/" ) !== FALSE ) { // Case input contain "/"
 		$Inputs = array_map ("trim", explode ( "/" , $Input ) );
-		if (noname_blacklist_ip_Check_IP ( $Inputs[0] ) && ctype_digit ($Inputs[1]) && $Inputs[1] > 0 && $Inputs[1] <= 32) { // Cas CIDR
-			$Cible = noname_blacklist_ip_CalculIPMask ( $Inputs[0] , noname_blacklist_ip_MaskType2Mask ( $Inputs[1] ) ) ;
-		} elseif (noname_blacklist_ip_Check_IP ( $Inputs[0] ) && noname_blacklist_ip_Check_IP ($Inputs[1]) && noname_blacklist_ip_Check_Mask ($Inputs[1]) ){ // Case IP/Mask
-			$Cible = noname_blacklist_ip_CalculIPMask ( $Inputs[0] , $Inputs[1] ) ;
+		if (noname_fake_link_ip_Check_IP ( $Inputs[0] ) && ctype_digit ($Inputs[1]) && $Inputs[1] > 0 && $Inputs[1] <= 32) { // Cas CIDR
+			$Cible = noname_fake_link_ip_CalculIPMask ( $Inputs[0] , noname_fake_link_ip_MaskType2Mask ( $Inputs[1] ) ) ;
+		} elseif (noname_fake_link_ip_Check_IP ( $Inputs[0] ) && noname_fake_link_ip_Check_IP ($Inputs[1]) && noname_fake_link_ip_Check_Mask ($Inputs[1]) ){ // Case IP/Mask
+			$Cible = noname_fake_link_ip_CalculIPMask ( $Inputs[0] , $Inputs[1] ) ;
 		} else { // Contains "/" but invalid
 			$Cible="NULL";
 		}
 	}
 	elseif ( strpos ( $Input , "-" ) !== FALSE ) { // Case input contains "-"
 		$Inputs = array_map ("trim", explode ( "-" , $Input ) );
-		if ( noname_blacklist_ip_Check_IP ( $Inputs[0] ) && noname_blacklist_ip_Check_IP ( $Inputs[1] ) ) {
+		if ( noname_fake_link_ip_Check_IP ( $Inputs[0] ) && noname_fake_link_ip_Check_IP ( $Inputs[1] ) ) {
 			if ( $Inputs[0] < $Inputs[1] ) { // Check IP orders
 				$Cible = $Inputs[0] . "-" . $Inputs[1] ;
 			}
@@ -24,7 +24,7 @@ function noname_blacklist_ip_Analyze_IP ( $Input ) {
 			$Cible="NULL";
 		}
 	}
-	elseif (noname_blacklist_ip_Check_IP ( $Input )) { // Case input is a single IP
+	elseif (noname_fake_link_ip_Check_IP ( $Input )) { // Case input is a single IP
 		$Inputs = array_map ("trim", explode ( "." , $Input ) );
 		if ( $Inputs[0] == 0 && $Inputs[1] == 0 && $Inputs[2] == 0 && $Inputs[3] == 0 ) { // Case 0.0.0.0
 			$Cible = "0.0.0.0-255.255.255.255" ;
@@ -48,10 +48,10 @@ function noname_blacklist_ip_Analyze_IP ( $Input ) {
 	return $Cible;
 }
 
-function noname_blacklist_ip_Check_IP ( &$IP ) {
+function noname_fake_link_ip_Check_IP ( &$IP ) {
 	// Input : String of IP address
 	// Output : TRUE if string is a valid IP address
-	$IPs = array_map("noname_blacklist_ip_IP_trim", explode ( "." , $IP ) ) ;
+	$IPs = array_map("noname_fake_link_ip_IP_trim", explode ( "." , $IP ) ) ;
 	if (count ($IPs) != 4 ) return false ;
 	foreach ( $IPs as $value ) {
 		if ( $value < 0 || $value > 255 ) {
@@ -62,16 +62,16 @@ function noname_blacklist_ip_Check_IP ( &$IP ) {
 	return true;
 }
 
-function noname_blacklist_ip_IP_Trim ( $IP ) {
+function noname_fake_link_ip_IP_Trim ( $IP ) {
 	// Input : array of IP address with strings 
 	// Output : array of the IP address with integer
 	return (int) ltrim ( trim ( $IP ) , "0" ) ;
 }
 
-function noname_blacklist_ip_Check_Mask ( $Mask ) {
+function noname_fake_link_ip_Check_Mask ( $Mask ) {
 // Input :  Mask to be checked, string
 // Return OK if the Mask string is correct
-	$Masks = array_map("noname_blacklist_ip_IP_trim", explode ( "." , $Mask ) ) ;
+	$Masks = array_map("noname_fake_link_ip_IP_trim", explode ( "." , $Mask ) ) ;
 	if (count ($Masks) != 4 ) return false ;
 	$OctetSignificatif = -1;
 	foreach ( $Masks as $key => $value ) {
@@ -102,7 +102,7 @@ function noname_blacklist_ip_Check_Mask ( $Mask ) {
 	return (($OctetSignificatif != -1) and in_array ($Masks[$OctetSignificatif],array ("255","254","252","248","240","224","192","128","0")));
 }
 
-function noname_blacklist_ip_MaskType2Mask ( $MaskType ) {
+function noname_fake_link_ip_MaskType2Mask ( $MaskType ) {
 // Input : Integer value
 // Output : Mask with $MaskType bit at 1, others at 0, string
 	for ($boucle = 0; $boucle < 4 ; $boucle++ ) {
@@ -114,7 +114,7 @@ function noname_blacklist_ip_MaskType2Mask ( $MaskType ) {
 	return implode ( "." , $Masks);
 }
 
-function noname_blacklist_ip_CalculIPMask ( $IP , $Mask ) {
+function noname_fake_link_ip_CalculIPMask ( $IP , $Mask ) {
 // Input : IP address and Mask, strings
 // Output a string $IPStart."-".$IPEnd for those IP and mask
 	$IPs = explode ( "." , $IP ) ;

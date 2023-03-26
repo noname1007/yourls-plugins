@@ -27,7 +27,7 @@ function noname_fake_link_ip_root ($args) {
     	yourls_redirect( $fake, 301 );
     	die();
     }
-	$Intervalle_IP = yourls_get_option ('noname_blacklist_ip_liste');
+	$Intervalle_IP = yourls_get_option ('noname_fake_link_ip_lists');
 	$Intervalle_IP = ( $Intervalle_IP ) ? ( unserialize ( $Intervalle_IP ) ):((array)NULL); 
 	foreach ( $Intervalle_IP as $value ) {
 		$IPs = explode ( "-" , $value );
@@ -41,22 +41,22 @@ function noname_fake_link_ip_root ($args) {
 }
 // Add admin page
 function noname_fake_link_ip_add_page () {
-    yourls_register_plugin_page( 'noname_blacklist_ip', 'Fake Link IPs', 'noname_fake_link_ip_do_page' );
+    yourls_register_plugin_page( 'noname_fake_link_ip', 'Fake Link IPs', 'noname_fake_link_ip_do_page' );
 }
 
 // Display admin page
 function noname_fake_link_ip_do_page () {
     if( isset( $_POST['action'] ) && $_POST['action'] == 'blacklist_ip' ) {
-        noname_blacklist_ip_process ();
+        noname_fake_link_ip_process ();
     } else {
-        noname_blacklist_ip_form ();
+        noname_fake_link_ip_form ();
     }
 }
 
 // Display form to administrate blacklisted IPs list
-function noname_blacklist_ip_form () {
+function noname_fake_link_ip_form () {
     $nonce = yourls_create_nonce( 'blacklist_ip' ) ;
-    $liste_ip = yourls_get_option ('noname_blacklist_ip_liste','Enter IP addresses here, one entry per line');
+    $liste_ip = yourls_get_option ('noname_fake_link_ip_lists','Enter IP addresses here, one entry per line');
     if ($liste_ip != 'Enter IP addresses here, one entry per line' )
         $liste_ip_display = implode ( "\r\n" , unserialize ( $liste_ip ) );
 	else
@@ -87,7 +87,7 @@ HTML;
 }
 
 // Update blacklisted IPs list
-function noname_blacklist_ip_process () {
+function noname_fake_link_ip_process () {
     // Check nonce
     yourls_verify_nonce( 'blacklist_ip' ) ;
 	
@@ -102,13 +102,13 @@ function noname_blacklist_ip_process () {
 	$boucle = 0;
 
 	foreach ($IP_Form as $value) {
-		$Retour = noname_blacklist_ip_Analyze_IP ( $value ) ;
+		$Retour = noname_fake_link_ip_Analyze_IP ( $value ) ;
 		if ( $Retour != "NULL" ) {
 			$IPList[$boucle++] = $Retour ;
 		}
 	}
 	// Update list
-	yourls_update_option ( 'noname_blacklist_ip_liste', serialize ( $IPList ) );
+	yourls_update_option ( 'noname_fake_link_ip_lists', serialize ( $IPList ) );
 	echo "Black list updated. New blacklist is " ;
 	if ( count ( $IPList ) == 0 ) 
 		echo "empty.";
