@@ -10,7 +10,7 @@ Author: noname
 // No direct call
 if( !defined( 'YOURLS_ABSPATH' ) ) die();
 
-include "noname_fake_link_ip_Check_IP_Module.php";
+include "noname_fake_link_Check_IP_Module.php";
 
 // Hook the custom function into the 'pre_check_ip_flood' event
 yourls_add_action( 'redirect_shorturl', 'noname_fake_link_ip_root' );
